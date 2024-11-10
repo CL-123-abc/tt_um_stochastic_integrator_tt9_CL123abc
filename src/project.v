@@ -389,35 +389,61 @@ input wire clk, rst_n, sn_bit_inc, sn_bit_dec;
 input wire [8:0] inc_mul, dec_mul;
 input wire [8:0] initial_value;
 output reg [8:0] value_output; 
-//This value will change with every input, 
-//so to store the integration result, need to capture the result somewhere else, timed to clk_counter
+reg init_flag; // I would just use initial value for the async reset because the initial value is set and isn't going to change but
+			   // theres a warning so I am using a init flag instead.
 
 parameter MAX_LIMIT = 9'd511;
 parameter MIN_LIMIT = 9'd0;
-    
-    always@(posedge clk or posedge rst_n) begin
-        if (rst_n) begin
-            value_output <= initial_value;
-        end
-        else begin
-            if (sn_bit_dec == 1 && sn_bit_inc == 0) begin
-                if (value_output == MIN_LIMIT) begin //min limit
-                    //stay at min limit
-                end 
-                else begin
-                    value_output <= value_output - dec_mul;
-                end
-            end
-            else if (sn_bit_dec == 0 && sn_bit_inc == 1) begin
-                if (value_output == MAX_LIMIT) begin //max limit
-                    //stay at max limit
-                end
-                else begin
-                    value_output <= value_output + inc_mul;
-                end
-            end
             // If sn_bit_dec == sn_bit_inc == (0 or 1) then no change
             // Add reset?
+	
+    always@(posedge clk or posedge rst_n) begin
+        if (rst_n) begin
+            value_output <= 0;
+			init_flag <= 1;
+        end
+        else begin
+			if (init_flag == 1) begin
+            	if (sn_bit_dec == 1 && sn_bit_inc == 0) begin
+					if (initial_value == MIN_LIMIT) begin //min limit
+                    	//stay at min limit
+						value_output <= initial_value;
+                	end 
+                	else begin
+                    	value_output <= initial_value - dec_mul;
+                	end
+            	end
+            	else if (sn_bit_dec == 0 && sn_bit_inc == 1) begin
+					if (initial_value == MAX_LIMIT) begin //max limit
+                    	//stay at max limit
+						value_output <= initial_value;
+                	end
+                	else begin
+                    	value_output <= initial_value + inc_mul;
+                	end
+            	end
+				init_flag <= 0;
+			end
+			else begin
+				if (sn_bit_dec == 1 && sn_bit_inc == 0) begin
+					if (initial_value == MIN_LIMIT) begin //min limit
+                    	//stay at min limit
+						value_output <= initial_value;
+                	end 
+                	else begin
+                    	value_output <= initial_value - dec_mul;
+                	end
+            	end
+            	else if (sn_bit_dec == 0 && sn_bit_inc == 1) begin
+					if (initial_value == MAX_LIMIT) begin //max limit
+                    	//stay at max limit
+						value_output <= initial_value;
+                	end
+                	else begin
+                    	value_output <= initial_value + inc_mul;
+                	end
+            	end
+			end
         end
     end
 endmodule
