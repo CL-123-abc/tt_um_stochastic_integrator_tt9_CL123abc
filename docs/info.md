@@ -22,7 +22,7 @@ LFSR Design in Stochastic Computing:​
 
 
 ## How to test
-Set ui_in[0] with 9'd511 and ui_in[1] with 0 to see the equations described. 
+Set ui_in[0] with a constant high and ui_in[1] with constant low to see the equations described. 
 
 ## External hardware
 ADALM2000
