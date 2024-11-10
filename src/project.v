@@ -20,6 +20,7 @@
  * uo_out[4] for serial output of system integrators' integrator b value
  * uo_out[5] for serial output of ODE integrators' integrator a value
  * uo_out[6] for serial output of ODE integrators' integrator b value
+ * uo_out[7] for output of seq integrator c sn bitstream
  */
 
 `default_nettype none
@@ -181,7 +182,7 @@ endmodule
 	    					  .input_bit_1(), .output_bitseq_1(), 
 	    					  .input_bit_2(), .output_bitseq_2());
      * SUBMODULE DESCRIPTION: 
-     * Takes in serial input (10bit) carrying the 9bit probability in bipolar representation 
+     * Takes in serial input (10bit) carrying the 9bit probability 
 	 * and gives the 9bit value as output. The last bit in the 10 is the dummy bit.
      * INPUTS:
      * .clk() takes in the clk of the whole circuit.
@@ -210,21 +211,44 @@ endmodule
 	 * SUBMODULE NAME:
      * comparator(bits_a, bits_b, bit_out)
 	 * SUBMODULE DESCRIPTION:
-     * 
+     * Takes in the 9-bit values of a and b and outputs 1 when a>b.
      * INPUTS:
-     * 
+     * .bits_a() takes in a 9-bit value.
+	 * .bits_b() takes in a 9-bit value.
      * OUTPUTS:
+	 * .bit_out() outputs the 1-bit value that makes the sn bitstream.
+     * \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
+	 * /////////////////////////////////////////////////////////////////////////////
+	 * SUBMODULE NAME:
+     * counter(clk, rst_n, sn_bit_inc, sn_bit_dec, value_output)
+	 * SUBMODULE DESCRIPTION:
+     * The integrator counter that can increment and decrement. When the inc == dec, no change in value.
+	 * As a default, it can only inc and dec by 1 per input and always starts at 0.
+     * INPUTS:
+	 * .clk() takes in the clk of the whole circuit.
+	 * .rst_n() takes in the reset of the whole circuit.
+     * .sn_bit_inc() takes in a 1 bit input, if inc == 1 and dec == 0, counter increments
+     * .sn_bit_dec() takes in a 1 bit input, if inc == 0 and dec == 1, counter decrements
+     * OUTPUTS:
+	 * .value_output() outputs the current value of the counter
+     * \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
+	 * /////////////////////////////////////////////////////////////////////////////
+	 * SUBMODULE NAME:
+     * modified_counter(clk, rst_n, sn_bit_inc, sn_bit_dec, inc_mul, dec_mul, initial_value, value_output)
+	 * The integrator counter that can increment and decrement. When the inc == dec, no change in value.
+	 * Can set the value of inc/dec and the initial value of the counter.
+	 * INPUTS:
+     * .clk() takes in the clk of the whole circuit.
+	 * .rst_n() takes in the reset of the whole circuit.
+     * .sn_bit_inc() takes in a 1 bit input, if inc == 1 and dec == 0, counter increments.
+     * .sn_bit_dec() takes in a 1 bit input, if inc == 0 and dec == 1, counter decrements.
+	 * .inc_mul() takes in a 9-bit value and sets the value for each increment.
+     * .dec_mul() takes in a 9-bit value and sets the value for each decrement.
+	 * .initial_value() takes in a 9-bit value and sets the counter's value at reset.
+     * OUTPUTS:
+	 * .value_output() outputs the current value of the counter.
+     * \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
 	 *
-     * \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
-	 * /////////////////////////////////////////////////////////////////////////////
-	 * 
-     * \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
-	 * /////////////////////////////////////////////////////////////////////////////
-	 * 
-     * \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
-	 * /////////////////////////////////////////////////////////////////////////////
-	 * 
-     * \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
      * /////////////////////////////////////////////////////////////////////////////
 	 * SUBMODULE NAME:
      * value_to_serial_output(.clk(), .rst_n(), .input_bits(), .output_bit());
@@ -233,7 +257,7 @@ endmodule
      * INPUTS:
      * .clk() takes in the clk of the whole circuit.
      * .rst_n() takes in the rst_n of the whole circuit.
-	 * .input_bits() takes in a 9bit value, here that is the bipolar probability of 1s in the SN bitstream.
+	 * .input_bits() takes in a 9bit value, here that is the probability of 1s in the SN bitstream.
      * OUTPUTS:
 	 * .output_bit() outputs each bit in the 9bit value and then outputs 0 for the 10th bit.
      * \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
