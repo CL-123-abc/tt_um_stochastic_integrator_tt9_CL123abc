@@ -426,21 +426,19 @@ parameter MIN_LIMIT = 9'd0;
 			end
 			else begin
 				if (sn_bit_dec == 1 && sn_bit_inc == 0) begin
-					if (initial_value == MIN_LIMIT) begin //min limit
+					if (value_output == MIN_LIMIT) begin //min limit
                     	//stay at min limit
-						value_output <= initial_value;
                 	end 
                 	else begin
-                    	value_output <= initial_value - dec_mul;
+                    	value_output <= value_output - dec_mul;
                 	end
             	end
             	else if (sn_bit_dec == 0 && sn_bit_inc == 1) begin
-					if (initial_value == MAX_LIMIT) begin //max limit
+					if (value_output == MAX_LIMIT) begin //max limit
                     	//stay at max limit
-						value_output <= initial_value;
                 	end
                 	else begin
-                    	value_output <= initial_value + inc_mul;
+                    	value_output <= value_output + inc_mul;
                 	end
             	end
 			end
