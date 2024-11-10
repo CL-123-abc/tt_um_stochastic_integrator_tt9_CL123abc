@@ -278,9 +278,9 @@ parameter MAX_CLK_CYCLES = 18'd131072;
 
 	always @(posedge clk or posedge rst_n) begin
     	if(rst_n) begin 
-    		output_bitseq_1 <= 9'd511; //JUST FOR THIS CODE WHERE IT WONT CHANGE FROM ALL 1S
+    		output_bitseq_1 <= 9'd0;
     		output_bitseq_2 <= 9'b0;
-    		output_bitcounter_1 <= 9'd511;
+    		output_bitcounter_1 <= 9'd0;
     		output_bitcounter_2 <= 9'b0;
     		loop <= 1'b0;
 			output_case <= 4'b0;
@@ -424,20 +424,18 @@ parameter MIN_LIMIT = 9'd0;
             	end
 				init_flag <= 0;
 			end
-			else begin //How to keep in limit when dec_mul/inc_mul is changeable and can jump over limit? TEMP FIX
+			else begin //How to keep in limit when dec_mul/inc_mul is changeable and can jump over limit?
 				if (sn_bit_dec == 1 && sn_bit_inc == 0) begin
-					if ((value_output == MIN_LIMIT) || (value_output == (MIN_LIMIT + 1'b1))) begin //min limit
+					if (value_output == MIN_LIMIT) begin //min limit
                     	//stay at min limit
-						value_output <= MIN_LIMIT;
                 	end 
 					else begin 
                     	value_output <= value_output - dec_mul;
                 	end
             	end
             	else if (sn_bit_dec == 0 && sn_bit_inc == 1) begin
-					if ((value_output == MAX_LIMIT) || (value_output == (MAX_LIMIT - 1'b1))) begin //max limit
+					if (value_output == MAX_LIMIT) begin //max limit
                     	//stay at max limit
-						value_output <= MAX_LIMIT;
                 	end
                 	else begin
                     	value_output <= value_output + inc_mul;
