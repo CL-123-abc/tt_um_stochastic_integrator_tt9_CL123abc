@@ -278,9 +278,9 @@ parameter MAX_CLK_CYCLES = 18'd131072;
 
 	always @(posedge clk or posedge rst_n) begin
     	if(rst_n) begin 
-    		output_bitseq_1 <= 9'b0;
+    		output_bitseq_1 <= 9'd511; // Just for this code, where its not going to change from all 1
     		output_bitseq_2 <= 9'b0;
-    		output_bitcounter_1 <= 9'b0;
+    		output_bitcounter_1 <= 9'd511;
     		output_bitcounter_2 <= 9'b0;
     		loop <= 1'b0;
 			output_case <= 4'b0;
