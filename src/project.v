@@ -426,15 +426,15 @@ parameter MIN_LIMIT = 9'd0;
 			end
 			else begin
 				if (sn_bit_dec == 1 && sn_bit_inc == 0) begin
-					if (value_output == MIN_LIMIT) begin //min limit
+					if (value_output == MIN_LIMIT or value_output == MIN_LIMIT + 1) begin //min limit
                     	//stay at min limit
                 	end 
-					else begin //How to keep in limit when dec_mul/inc_mul is changeable and can jump over limit?
+					else begin //How to keep in limit when dec_mul/inc_mul is changeable and can jump over limit? TEMP FIX
                     	value_output <= value_output - dec_mul;
                 	end
             	end
             	else if (sn_bit_dec == 0 && sn_bit_inc == 1) begin
-					if (value_output == MAX_LIMIT) begin //max limit
+					if (value_output == MAX_LIMIT or value_output == MAX_LIMIT - 1) begin //max limit
                     	//stay at max limit
                 	end
                 	else begin
