@@ -45,7 +45,7 @@ async def test_project(dut):
     await ClockCycles(dut.clk,1) 
     test_out_prob = 0
     #Set input sample
-    input_array1 = [0,1,1,1,1,1,1,1,1,1] # Max
+    input_array1 = [1,1,1,1,1,1,1,1,1,1] # Max
     input_array2 = [0,0,0,0,0,0,0,0,0,0] # Min 
     # 10th bit is not read
     #Compare output to theory for each clock cycle
