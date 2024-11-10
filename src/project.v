@@ -429,7 +429,7 @@ parameter MIN_LIMIT = 9'd0;
 					if (value_output == MIN_LIMIT) begin //min limit
                     	//stay at min limit
                 	end 
-                	else begin
+					else begin //How to keep in limit when dec_mul/inc_mul is changeable and can jump over limit?
                     	value_output <= value_output - dec_mul;
                 	end
             	end
